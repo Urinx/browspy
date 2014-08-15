@@ -21,22 +21,22 @@ browspy
 ###获取用户头像
 这个结合人脸识别还可以判断性别，年龄等敏感信息。
 
-![face](3.png)
+![face](screenshot/3.png)
 
 ###精确定位
 根据IP地址和经纬度。
 
-![location](4.png)
+![location](screenshot/4.png)
 
 ###DDos
 需跨域
 
-![ddos](5.png)
+![ddos](screenshot/5.png)
 
 ###操作系统,设备型号
 当然要详细判断操作系统版本，这个相当粗糙有待完善。
 
-![platform](6.png)
+![platform](screenshot/6.png)
 
 未完待续
 ------
