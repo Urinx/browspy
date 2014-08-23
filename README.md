@@ -43,6 +43,11 @@ browspy
 
 ![recorder](screenshot/7.png)
 
+###网络测速
+提供两种方式测速：图片测速和音频测速。
+
+![recorder](screenshot/8.png)
+
 未完待续
 ------
 1.内网扫描

