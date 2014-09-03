@@ -38,6 +38,10 @@ browspy
 
 ![platform](screenshot/6.png)
 
+更新：新加详细的判断
+
+![platform](screenshot/9.png)
+
 ###录音
 录音10秒钟，用blob保存为wav格式。
 
