@@ -1,4 +1,4 @@
-browspy
+browspy.js
 =======
 
 浏览器用户全部信息收集js
@@ -7,6 +7,12 @@ browspy
 
 ###json保存个体的信息数据:
 ![info](screenshot/0.png)
+
+###内网外网IP地址
+![ip](screenshot/10.png)
+
+###内网扫描
+![ip](screenshot/11.png)
 
 ###地理位置信息
 这个需要权限，用户允许才行！
@@ -54,5 +60,4 @@ browspy
 
 未完待续
 ------
-1.内网扫描
-2.更多
+1.更多
